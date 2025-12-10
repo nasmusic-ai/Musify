@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Musify Player</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff; /* light background like your site */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-wrapper {
+    width: 90%;
+    max-width: 960px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#player {
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    position: relative;
+}
+
+#player iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #ff2dd6;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Optional: video info below */
+.video-info {
+    margin-top: 15px;
+    text-align: center;
+}
+.video-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+}
+.video-artist {
+    font-size: 16px;
+    color: #777;
+    margin-top: 4px;
+}
+</style>
+</head>
+<body>
+
+<button class="close-btn" onclick="window.history.back()">×</button>
+
+<div class="player-wrapper">
+    <div id="player"></div>
+    <div class="video-info">
+        <div class="video-title" id="video-title">Loading...</div>
+        <div class="video-artist" id="video-artist"></div>
+    </div>
+</div>
+
+<script>
+// Get video ID from URL
+function getVideoIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('video') || 'M7lc1UVf-VE';
+}
+
+// Optional: provide titles/artists for your videos
+const videoData = {
+    'WdF-NbCuKMs': {title: 'Perfect Day at Legends', artist: 'Legend of the Seas'},
+    '60ItHLz5WEA': {title: 'Where Icons Become', artist: 'Ocean Dreams'},
+    'hTWKbfoikeg': {title: 'Sunset Vibes', artist: 'Wave Riders'}
+};
+
+// Load YouTube IFrame API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+
+var player;
+function onYouTubeIframeAPIReady() {
+    const videoId = getVideoIdFromUrl();
+    
+    // Set title and artist
+    if(videoData[videoId]) {
+        document.getElementById('video-title').textContent = videoData[videoId].title;
+        document.getElementById('video-artist').textContent = videoData[videoId].artist;
+    }
+
+    player = new YT.Player('player', {
+        videoId: videoId,
+        width: '100%',
+        height: '100%',
+        playerVars: {
+            'autoplay': 1,
+            'controls': 1,
+            'modestbranding': 1,
+            'rel': 0,
+            'playsinline': 1
+        },
+        events: {
+            'onReady': function(event) {
+                event.target.playVideo();
+            }
+        }
+    });
+}
+</script>
+
+</body>
+</html>
