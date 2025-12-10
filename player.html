@@ -2,178 +2,173 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Musify</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Mobile YouTube Player</title>
+
 <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#000;font-family:-apple-system,system-ui,sans-serif;color:#fff;overflow-x:hidden;}
-
-    /* Video exactly 60vh from the top */
-    .hero-video{
-        position:fixed;
-        top:0; left:0; right:0;
-        width:100%;
-        height:60vh;            /* ← exactly what you asked for */
-        overflow:hidden;
-    }
-    #player{
-        width:100%;
-        height:100%;
-        object-fit:cover;       /* fills the 60vh area nicely */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
     }
 
-    .back-text{
-        position:absolute;
-        top:20px; left:20px;
-        font-weight:700;
-        font-size:18px;
-        color:#fff;
-        z-index:10;
-        cursor:pointer;
+    /* Header Video Banner */
+    .video-banner {
+        position: relative;
+        width: 100%;
+        height: 330px;
+        background-size: cover;
+        background-position: center;
+        background-image: url('https://img.youtube.com/vi/WdF-NbCuKMs/maxresdefault.jpg');
+        border-bottom: 1px solid #333;
     }
 
-    .section-title{
-        position:absolute;
-        top:60vh;               /* starts right where video ends */
-        left:20px;
-        font-size:32px;
-        font-weight:800;
-        z-index:10;
-        padding:20px 0 10px;
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 20;
     }
 
-    .thumb-row{
-        position:absolute;
-        top:60vh;
-        left:0; right:0;
-        padding:0 20px 100px 20px;   /* 100px bottom padding for nav */
-        overflow-x:auto;
-        white-space:nowrap;
-        -webkit-overflow-scrolling:touch;
-        z-index:5;
-    }
-    .thumb-row::-webkit-scrollbar{display:none;}
-
-    .thumb-card{
-        display:inline-block;
-        width:280px;
-        margin-right:15px;
-        border-radius:20px;
-        overflow:hidden;
-        box-shadow:0 8px 25px rgba(0,0,0,0.6);
-        background:#111;
-        cursor:pointer;
-    }
-    .thumb-card img{
-        width:100%;
-        height:158px;
-        object-fit:cover;
-    }
-    .thumb-title{
-        padding:14px;
-        font-size:15px;
-        font-weight:600;
-        line-height:1.3;
+    .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 70px;
+        cursor: pointer;
+        color: #fff;
+        z-index: 15;
     }
 
-    .bottom-nav{
-        position:fixed;
-        bottom:0; left:0; right:0;
-        background:rgba(255,255,255,0.95);
-        backdrop-filter:blur(10px);
-        padding:12px 0;
-        display:flex;
-        justify-content:space-around;
-        z-index:20;
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: none;
     }
-    .nav-item{
-        text-align:center;
-        font-size:12px;
-        color:#888;
-        font-weight:500;
-    }
-    .nav-item i{font-size:24px;display:block;margin-bottom:4px;}
-    .nav-item.active{color:#ff2d6e;}
-    .nav-item.active i{color:#ff2d6e;}
 
-    .loading{
-        position:absolute;
-        top:30vh; left:50%;
-        transform:translateX(-50%);
-        font-size:20px;
-        color:#fff;
-        z-index:5;
+    .title {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        text-shadow: 0px 0px 10px #000;
+    }
+
+    /* Music Video Section */
+    .section-title {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 15px;
+    }
+
+    .video-list {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .video-card {
+        min-width: 180px;
+        background: #111;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .video-card img {
+        width: 100%;
+        height: 110px;
+        object-fit: cover;
+    }
+
+    .video-card p {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #111;
+        display: flex;
+        justify-content: space-around;
+        padding: 12px 0;
+        border-top: 1px solid #333;
+    }
+
+    .bottom-nav div {
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+        cursor: pointer;
+    }
+
+    .active {
+        color: #ff41ff;
     }
 </style>
+
 </head>
 <body>
 
-    <div class="back-text" onclick="history.back()">back</div>
+<div class="video-banner" id="banner">
+    <div class="back-btn">Back</div>
+    <div class="play-button" onclick="playVideo()">▶</div>
+    <div class="title">DISCOVER ROYAL BEACH CLUB</div>
 
-    <div class="hero-video">
-        <div id="player"></div>
-        <div class="loading" id="loading">Loading...</div>
+    <iframe id="ytPlayer"
+        src="https://www.youtube.com/embed/WdF-NbCuKMs?autoplay=1&controls=1&enablejsapi=1">
+    </iframe>
+</div>
+
+<div class="section-title">Music Videos</div>
+
+<div class="video-list">
+    <div class="video-card" onclick="changeVideo('WdF-NbCuKMs')">
+        <img src="https://img.youtube.com/vi/WdF-NbCuKMs/maxresdefault.jpg">
+        <p>Discover Royal Beach Club Paradise Island</p>
     </div>
 
-    <div class="section-title">Music Videos</div>
-
-    <div class="thumb-row" id="thumbRow">
-        <!-- Thumbnails injected by JS -->
+    <div class="video-card" onclick="changeVideo('v7AYKdwa5uM')">
+        <img src="https://img.youtube.com/vi/v7AYKdwa5uM/hqdefault.jpg">
+        <p>Royal Beach Club Now</p>
     </div>
+</div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active"><i class="fas fa-home"></i><div>Home</div></div>
-        <div class="nav-item"><i class="fas fa-search"></i><div>Search</div></div>
-        <div class="nav-item"><i class="fas fa-book"></i><div>Library</div></div>
-        <div class="nav-item"><i class="fas fa-user"></i><div>Profile</div></div>
-    </div>
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="active">🏠<br>Home</div>
+    <div>🔍<br>Search</div>
+    <div>📚<br>Library</div>
+    <div>👤<br>Profile</div>
+</div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let player;
-let currentVideoId = 'hTWKbfoikeg';
+function playVideo() {
+    document.querySelector(".play-button").style.display = "none";
+    document.querySelector(".title").style.display = "none";
+    document.getElementById("ytPlayer").style.display = "block";
+}
 
-const urlParams = new URLSearchParams(window.location.search);
-const v = urlParams.get('v');
-if (v) currentVideoId = v;
-
-const videos = [
-    {id: '60ItHLz5WEA', title: 'Discover Royal Beach Club Paradise Island', thumb: 'https://i.ytimg.com/vi/60ItHLz5WEA/maxresdefault.jpg'},
-    {id: 'WdF-NbCuKMs', title: 'Royal Beach Club Now', thumb: 'https://i.ytimg.com/vi/WdF-NbCuKMs/maxresdefault.jpg'},
-    {id: 'hTWKbfoikeg', title: 'Sunset Vibes - Alan Walker', thumb: 'https://i.ytimg.com/vi/hTWKbfoikeg/maxresdefault.jpg'},
-];
-
-const thumbRow = document.getElementById('thumbRow');
-videos.forEach(video => {
-    const card = document.createElement('div');
-    card.className = 'thumb-card';
-    card.onclick = () => location.href = `player.html?v=${video.id}`;
-    card.innerHTML = `
-        <img src="${video.thumb}" alt="">
-        <div class="thumb-title">${video.title}</div>
-    `;
-    thumbRow.appendChild(card);
-});
-
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        videoId: currentVideoId,
-        playerVars: {
-            autoplay: 1,
-            controls: 1,
-            modestbranding: 1,
-            rel: 0,
-            playsinline: 1,
-            iv_load_policy: 3,
-            loop: 1,
-            playlist: currentVideoId
-        },
-        events: { 'onReady': e => {
-            document.getElementById('loading').style.display='none';
-            e.target.playVideo();
-        }}
-    });
+function changeVideo(videoId) {
+    let iframe = document.getElementById("ytPlayer");
+    iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+    playVideo();
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>
 
