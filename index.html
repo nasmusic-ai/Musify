@@ -240,38 +240,40 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var players = {};
+
 function onYouTubeIframeAPIReady() {
-    // Video 1
-    players.player1 = new YT.Player('player1', {
-        height: '130',
-        width: '220',
-        videoId: 'WdF-NbCuKMs',
-        playerVars: { 'modestbranding': 1, 'playsinline': 1 },
-        events: { 'onReady': onPlayerReady }
-    });
-    // Video 2
-    players.player2 = new YT.Player('player2', {
-        height: '130',
-        width: '220',
-        videoId: '60ItHLz5WEA',
-        playerVars: { 'modestbranding': 1, 'playsinline': 1 },
-        events: { 'onReady': onPlayerReady }
-    });
-    // Video 3
-    players.player3 = new YT.Player('player3', {
-        height: '130',
-        width: '220',
-        videoId: 'hTWKbfoikeg',
-        playerVars: { 'modestbranding': 1, 'playsinline': 1 },
-        events: { 'onReady': onPlayerReady }
+    // Video IDs for each player
+    var videos = [
+        {id: 'player1', videoId: 'WdF-NbCuKMs'},
+        {id: 'player2', videoId: '60ItHLz5WEA'},
+        {id: 'player3', videoId: 'hTWKbfoikeg'}
+    ];
+
+    videos.forEach(function(v) {
+        players[v.id] = new YT.Player(v.id, {
+            height: '130',
+            width: '220',
+            videoId: v.videoId,
+            playerVars: { 'modestbranding': 1, 'playsinline': 1 },
+            events: { 'onReady': onPlayerReady }
+        });
     });
 }
 
 function onPlayerReady(event) {
-    // Auto-play muted videos on mobile-friendly way
+    // Mute videos to allow autoplay if desired
     event.target.mute();
-    // Optional: start playing automatically
-    // event.target.playVideo();
+
+    // Add click listener to play/pause video when card is clicked
+    var playerDiv = event.target.getIframe().parentNode;
+    playerDiv.addEventListener('click', function() {
+        var state = event.target.getPlayerState();
+        if(state !== YT.PlayerState.PLAYING){
+            event.target.playVideo();
+        } else {
+            event.target.pauseVideo();
+        }
+    });
 }
 </script>
 
