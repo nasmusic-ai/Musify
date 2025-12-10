@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Musify - Your World of Sound</title>
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    background:#f8f9fa;
+    color:#000;
+    overflow-x:hidden;
+    padding-bottom:80px;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width:100%;
+    height:210px;
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    padding:50px 20px;
+    color:white;
+}
+.header-logo{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+.header-logo img{width:100%;}
+.header-text{
+    margin-left:10px;
+    font-size:22px;
+    font-weight:700;
+}
+.sign-btn{
+    position:absolute;
+    top:20px;
+    right:15px;
+    background:rgba(255,255,255,0.9);
+    color:black;
+    padding:7px 20px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    border:none;
+    backdrop-filter:blur(10px);
+}
+
+/* Welcome Card */
+.welcome-box{
+    background:linear-gradient(135deg, #c9b0e9 0%, #a78bfa 100%);
+    padding:18px;
+    margin:15px;
+    border-radius:20px;
+    display:flex;
+    gap:15px;
+    align-items:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+.welcome-box img{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+}
+.welcome-text{
+    font-size:15px;
+    line-height:18px;
+    color:#555;
+}
+.welcome-title{
+    font-size:20px;
+    font-weight:700;
+    color:#000;
+}
+
+/* Title */
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.view-all{
+    font-size:13px;
+    color:#667eea;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:600;
+}
+
+/* VIDEO GRID */
+.video-grid {
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:12px;
+    padding:0 15px;
+    margin-bottom:20px;
+}
+
+.video-grid.expanded {
+    grid-template-columns:repeat(2, 1fr);
+}
+
+.video-card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 3px 15px rgba(0,0,0,0.08);
+    cursor:pointer;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-card:hover {
+    transform:translateY(-2px);
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+}
+
+.video-thumbnail {
+    position:relative;
+    width:100%;
+    height:130px;
+    background:#f0f0f0;
+    overflow:hidden;
+}
+
+.video-thumbnail iframe {
+    width:100%;
+    height:100%;
+    border:none;
+}
+
+.play-overlay {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:40px;
+    height:40px;
+    background:rgba(0,0,0,0.7);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:16px;
+    pointer-events:none;
+}
+
+/* Video Info */
+.video-info{
+    padding:12px;
+}
+.video-title{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:4px;
+    color:#000;
+    line-height:1.3;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+.video-artist{
+    font-size:12px;
+    color:#777;
+    margin-bottom:4px;
+}
+.video-duration {
+    font-size:11px;
+    color:#999;
+}
+
+/* FULL SCREEN OVERLAY */
+.video-overlay {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+}
+
+.video-overlay.active {
+    display:flex;
+}
+
+.overlay-video-container {
+    width:90%;
+    max-width:800px;
+    background:#000;
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+}
+
+.overlay-video-container iframe {
+    width:100%;
+    height:50vh;
+    min-height:300px;
+    border:none;
+}
+
+.overlay-controls {
+    position:absolute;
+    top:15px;
+    right:15px;
+    display:flex;
+    gap:10px;
+}
+
+.control-btn {
+    width:40px;
+    height:40px;
+    background:rgba(0,0,0,0.7);
+    border:none;
+    border-radius:50%;
+    color:white;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    backdrop-filter:blur(10px);
+}
+
+.overlay-info {
+    color:white;
+    text-align:center;
+    margin-top:20px;
+    padding:0 20px;
+}
+
+.overlay-title {
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.overlay-artist {
+    font-size:14px;
+    color:#ccc;
+    margin-bottom:10px;
+}
+
+.overlay-description {
+    font-size:12px;
+    color:#999;
+    line-height:1.4;
+}
+
+/* NAV BAR */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:white;
+    padding:10px 0;
+    border-top:1px solid #ddd;
+    display:flex;
+    justify-content:space-around;
+    z-index:100;
+}
+.bottom-nav-item{
+    text-align:center;
+    font-size:11px;
+    color:#777;
+    cursor:pointer;
+    transition:color 0.2s ease;
+}
+.bottom-nav-item i{
+    font-size:20px;
+    margin-bottom:4px;
+    display:block;
+}
+.bottom-nav-item.active{
+    color:#667eea;
+    font-weight:600;
+}
+
+/* Loading Animation */
+.loading {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100px;
+    color:#667eea;
+}
+
+.loading i {
+    font-size:24px;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .video-grid.expanded {
+        grid-template-columns:1fr;
+    }
+    
+    .overlay-video-container iframe {
+        height:40vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <button class="sign-btn">Sign in</button>
+    <div class="header-logo">
+        <i class="fas fa-music" style="color:#667eea; font-size:24px;"></i>
+    </div>
+    <div class="header-text">Your World of Sound</div>
+</div>
+
+<!-- WELCOME -->
+<div class="welcome-box">
+    <i class="fas fa-headphones" style="color:#667eea; font-size:32px;"></i>
+    <div>
+        <div class="welcome-title">Musify</div>
+        <div class="welcome-text">
+            Stream unlimited music videos and discover new artists
+        </div>
+    </div>
+</div>
+
+<!-- VIDEO SECTION -->
+<div class="section-title">
+    Trending Music Videos 
+    <span class="view-all" onclick="toggleVideoGrid()">
+        <span id="view-all-text">View all</span> <i class="fas fa-chevron-down" id="view-all-icon"></i>
+    </span>
+</div>
+
+<div class="video-grid" id="videoGrid">
+    <!-- Videos will be loaded here -->
+</div>
+
+<!-- FULL SCREEN OVERLAY -->
+<div class="video-overlay" id="videoOverlay">
+    <div class="overlay-video-container">
+        <div class="overlay-controls">
+            <button class="control-btn" onclick="closeOverlay()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="overlayPlayer"></div>
+    </div>
+    <div class="overlay-info">
+        <div class="overlay-title" id="overlayTitle"></div>
+        <div class="overlay-artist" id="overlayArtist"></div>
+        <div class="overlay-description" id="overlayDescription"></div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <div class="bottom-nav-item active" onclick="showSection('home')">
+        <i class="fas fa-home"></i>Home
+    </div>
+    <div class="bottom-nav-item" onclick="showSection('search')">
+        <i class="fas fa-search"></i>Search
+    </div>
+    <div class="bottom-nav-item" onclick="showSection('library')">
+        <i class="fas fa-book"></i>Library
+    </div>
+    <div class="bottom-nav-item" onclick="showSection('profile')">
+        <i class="fas fa-user"></i>Profile
+    </div>
+</nav>
+
+<!-- YouTube IFrame API -->
+<script>
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var players = {};
+var expanded = false;
+
+// Music video database with YouTube video IDs
+const videoDatabase = [
+    {
+        id: 'player1',
+        videoId: 'WdF-NbCuKMs',
+        title: 'Perfect Day at Legends',
+        artist: 'Legend of the Seas',
+        duration: '3:45',
+        description: 'A beautiful melody perfect for relaxation and inspiration'
+    },
+    {
+        id: 'player2',
+        videoId: '60ItHLz5WEA',
+        title: 'Where Icons Become',
+        artist: 'Ocean Dreams',
+        duration: '4:12',
+        description: 'Epic soundtrack that takes you on a journey'
+    },
+    {
+        id: 'player3',
+        videoId: 'hTWKbfoikeg',
+        title: 'Sunset Vibes',
+        artist: 'Wave Riders',
+        duration: '3:28',
+        description: 'Chill beats perfect for sunset moments'
+    },
+    {
+        id: 'player4',
+        videoId: 'kXYiU_JCYtU',
+        title: 'Numb',
+        artist: 'Linkin Park',
+        duration: '3:07',
+        description: 'Classic rock anthem that defined a generation'
+    },
+    {
+        id: 'player5',
+        videoId: 'dQw4w9WgXcQ',
+        title: 'Never Gonna Give You Up',
+        artist: 'Rick Astley',
+        duration: '3:33',
+        description: 'The iconic song that never gets old'
+    },
+    {
+        id: 'player6',
+        videoId: '9bZkp7q19f0',
+        title: 'Gangnam Style',
+        artist: 'PSY',
+        duration: '3:39',
+        description: 'Global phenomenon that broke all records'
+    },
+    {
+        id: 'player7',
+        videoId: 'fJ9rUzIMcZQ',
+        title: 'Bohemian Rhapsody',
+        artist: 'Queen',
+        duration: '5:55',
+        description: 'The legendary rock opera masterpiece'
+    },
+    {
+        id: 'player8',
+        videoId: 'pRpeEdMmmQ0',
+        title: 'Shape of You',
+        artist: 'Ed Sheeran',
+        duration: '3:53',
+        description: 'Catchy pop hit that topped charts worldwide'
+    },
+    {
+        id: 'player9',
+        videoId: 'JGwWNGJdvx8',
+        title: 'Perfect',
+        artist: 'Ed Sheeran',
+        duration: '4:23',
+        description: 'Romantic ballad perfect for weddings'
+    },
+    {
+        id: 'player10',
+        videoId: '2Vv-BfVoq4g',
+        title: 'Despacito',
+        artist: 'Luis Fonsi ft. Daddy Yankee',
+        duration: '3:47',
+        description: 'Latin hit that conquered the world'
+    },
+    {
+        id: 'player11',
+        videoId: 'hT_nvWreIhg',
+        title: 'Counting Stars',
+        artist: 'OneRepublic',
+        duration: '4:17',
+        description: 'Upbeat pop rock with meaningful lyrics'
+    },
+    {
+        id: 'player12',
+        videoId: 'aJOTlE1K90k',
+        title: 'Uptown Funk',
+        artist: 'Mark Ronson ft. Bruno Mars',
+        duration: '4:30',
+        description: 'Funky groove that makes everyone dance'
+    }
+];
+
+function onYouTubeIframeAPIReady() {
+    loadVideos();
+}
+
+function loadVideos() {
+    const videoGrid = document.getElementById('videoGrid');
+    videoGrid.innerHTML = '';
+    
+    // Show loading animation
+    videoGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i></div>';
+    
+    setTimeout(() => {
+        videoGrid.innerHTML = '';
+        
+        // Load initial 6 videos, or all if expanded
+        const videosToShow = expanded ? videoDatabase : videoDatabase.slice(0, 6);
+        
+        videosToShow.forEach((video, index) => {
+            const videoCard = createVideoCard(video, index);
+            videoGrid.appendChild(videoCard);
+        });
+        
+        // Initialize YouTube players
+        videosToShow.forEach((video) => {
+            if (!players[video.id]) {
+                players[video.id] = new YT.Player(video.id, {
+                    height: '130',
+                    width: '220',
+                    videoId: video.videoId,
+                    playerVars: { 
+                        'modestbranding': 1, 
+                        'playsinline': 1,
+                        'controls': 0,
+                        'showinfo': 0,
+                        'rel': 0
+                    },
+                    events: { 
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+        });
+    }, 500);
+}
+
+function createVideoCard(video, index) {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.onclick = () => openOverlay(video);
+    
+    card.innerHTML = `
+        <div class="video-thumbnail">
+            <div id="${video.id}"></div>
+            <div class="play-overlay">
+                <i class="fas fa-play"></i>
+            </div>
+        </div>
+        <div class="video-info">
+            <div class="video-title">${video.title}</div>
+            <div class="video-artist">${video.artist}</div>
+            <div class="video-duration">${video.duration}</div>
+        </div>
+    `;
+    
+    return card;
+}
+
+function onPlayerReady(event) {
+    // Auto-play muted videos when ready (optional)
+    // event.target.mute();
+    // event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+    // Handle player state changes if needed
+}
+
+function toggleVideoGrid() {
+    expanded = !expanded;
+    const viewAllText = document.getElementById('view-all-text');
+    const viewAllIcon = document.getElementById('view-all-icon');
+    const videoGrid = document.getElementById('videoGrid');
+    
+    if (expanded) {
+        viewAllText.textContent = 'Show less';
+        viewAllIcon.className = 'fas fa-chevron-up';
+        videoGrid.classList.add('expanded');
+    } else {
+        viewAllText.textContent = 'View all';
+        viewAllIcon.className = 'fas fa-chevron-down';
+        videoGrid.classList.remove('expanded');
+    }
+    
+    loadVideos();
+}
+
+function openOverlay(video) {
+    const overlay = document.getElementById('videoOverlay');
+    const overlayPlayer = document.getElementById('overlayPlayer');
+    const overlayTitle = document.getElementById('overlayTitle');
+    const overlayArtist = document.getElementById('overlayArtist');
+    const overlayDescription = document.getElementById('overlayDescription');
+    
+    // Set video info
+    overlayTitle.textContent = video.title;
+    overlayArtist.textContent = video.artist;
+    overlayDescription.textContent = video.description;
+    
+    // Create player for overlay
+    overlayPlayer.innerHTML = '';
+    const player = new YT.Player('overlayPlayer', {
+        height: '100%',
+        width: '100%',
+        videoId: video.videoId,
+        playerVars: { 
+            'autoplay': 1,
+            'controls': 1,
+            'modestbranding': 1,
+            'rel': 0
+        }
+    });
+    
+    // Store player reference for cleanup
+    overlay.player = player;
+    
+    // Show overlay
+    overlay.classList.add('active');
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+}
+
+function closeOverlay() {
+    const overlay = document.getElementById('videoOverlay');
+    
+    // Stop and destroy player
+    if (overlay.player) {
+        overlay.player.stopVideo();
+        overlay.player.destroy();
+        overlay.player = null;
+    }
+    
+    // Hide overlay
+    overlay.classList.remove('active');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+function showSection(section) {
+    // Update active nav item
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.bottom-nav-item').classList.add('active');
+    
+    // Handle different sections (placeholder for future functionality)
+    switch(section) {
+        case 'home':
+            // Already on home
+            break;
+        case 'search':
+            alert('Search functionality coming soon!');
+            break;
+        case 'library':
+            alert('Your library is coming soon!');
+            break;
+        case 'profile':
+            alert('Profile page coming soon!');
+            break;
+    }
+}
+
+// Close overlay when clicking outside the video
+document.getElementById('videoOverlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeOverlay();
+    }
+});
+
+// Handle escape key to close overlay
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeOverlay();
+    }
+});
+</script>
+
+</body>
+</html>
