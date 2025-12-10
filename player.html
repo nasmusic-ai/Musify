@@ -3,137 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Musify Player</title>
-
+<title>Musify</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff; /* light background like your site */
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#000;font-family:-apple-system,system-ui,sans-serif;color:#fff;overflow-x:hidden;}
 
-.player-wrapper {
-    width: 90%;
-    max-width: 960px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    /* Video exactly 60vh from the top */
+    .hero-video{
+        position:fixed;
+        top:0; left:0; right:0;
+        width:100%;
+        height:60vh;            /* ← exactly what you asked for */
+        overflow:hidden;
+    }
+    #player{
+        width:100%;
+        height:100%;
+        object-fit:cover;       /* fills the 60vh area nicely */
+    }
 
-#player {
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    position: relative;
-}
+    .back-text{
+        position:absolute;
+        top:20px; left:20px;
+        font-weight:700;
+        font-size:18px;
+        color:#fff;
+        z-index:10;
+        cursor:pointer;
+    }
 
-#player iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+    .section-title{
+        position:absolute;
+        top:60vh;               /* starts right where video ends */
+        left:20px;
+        font-size:32px;
+        font-weight:800;
+        z-index:10;
+        padding:20px 0 10px;
+    }
 
-/* Close button */
-.close-btn {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: #ff2dd6;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
+    .thumb-row{
+        position:absolute;
+        top:60vh;
+        left:0; right:0;
+        padding:0 20px 100px 20px;   /* 100px bottom padding for nav */
+        overflow-x:auto;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+        z-index:5;
+    }
+    .thumb-row::-webkit-scrollbar{display:none;}
 
-/* Optional: video info below */
-.video-info {
-    margin-top: 15px;
-    text-align: center;
-}
-.video-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #000;
-}
-.video-artist {
-    font-size: 16px;
-    color: #777;
-    margin-top: 4px;
-}
+    .thumb-card{
+        display:inline-block;
+        width:280px;
+        margin-right:15px;
+        border-radius:20px;
+        overflow:hidden;
+        box-shadow:0 8px 25px rgba(0,0,0,0.6);
+        background:#111;
+        cursor:pointer;
+    }
+    .thumb-card img{
+        width:100%;
+        height:158px;
+        object-fit:cover;
+    }
+    .thumb-title{
+        padding:14px;
+        font-size:15px;
+        font-weight:600;
+        line-height:1.3;
+    }
+
+    .bottom-nav{
+        position:fixed;
+        bottom:0; left:0; right:0;
+        background:rgba(255,255,255,0.95);
+        backdrop-filter:blur(10px);
+        padding:12px 0;
+        display:flex;
+        justify-content:space-around;
+        z-index:20;
+    }
+    .nav-item{
+        text-align:center;
+        font-size:12px;
+        color:#888;
+        font-weight:500;
+    }
+    .nav-item i{font-size:24px;display:block;margin-bottom:4px;}
+    .nav-item.active{color:#ff2d6e;}
+    .nav-item.active i{color:#ff2d6e;}
+
+    .loading{
+        position:absolute;
+        top:30vh; left:50%;
+        transform:translateX(-50%);
+        font-size:20px;
+        color:#fff;
+        z-index:5;
+    }
 </style>
 </head>
 <body>
 
-<button class="close-btn" onclick="window.history.back()">×</button>
+    <div class="back-text" onclick="history.back()">back</div>
 
-<div class="player-wrapper">
-    <div id="player"></div>
-    <div class="video-info">
-        <div class="video-title" id="video-title">Loading...</div>
-        <div class="video-artist" id="video-artist"></div>
+    <div class="hero-video">
+        <div id="player"></div>
+        <div class="loading" id="loading">Loading...</div>
     </div>
-</div>
 
+    <div class="section-title">Music Videos</div>
+
+    <div class="thumb-row" id="thumbRow">
+        <!-- Thumbnails injected by JS -->
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active"><i class="fas fa-home"></i><div>Home</div></div>
+        <div class="nav-item"><i class="fas fa-search"></i><div>Search</div></div>
+        <div class="nav-item"><i class="fas fa-book"></i><div>Library</div></div>
+        <div class="nav-item"><i class="fas fa-user"></i><div>Profile</div></div>
+    </div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-// Get video ID from URL
-function getVideoIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('video') || 'M7lc1UVf-VE';
-}
+let player;
+let currentVideoId = 'hTWKbfoikeg';
 
-// Optional: provide titles/artists for your videos
-const videoData = {
-    'WdF-NbCuKMs': {title: 'Perfect Day at Legends', artist: 'Legend of the Seas'},
-    '60ItHLz5WEA': {title: 'Where Icons Become', artist: 'Ocean Dreams'},
-    'hTWKbfoikeg': {title: 'Sunset Vibes', artist: 'Wave Riders'}
-};
+const urlParams = new URLSearchParams(window.location.search);
+const v = urlParams.get('v');
+if (v) currentVideoId = v;
 
-// Load YouTube IFrame API
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
+const videos = [
+    {id: '60ItHLz5WEA', title: 'Discover Royal Beach Club Paradise Island', thumb: 'https://i.ytimg.com/vi/60ItHLz5WEA/maxresdefault.jpg'},
+    {id: 'WdF-NbCuKMs', title: 'Royal Beach Club Now', thumb: 'https://i.ytimg.com/vi/WdF-NbCuKMs/maxresdefault.jpg'},
+    {id: 'hTWKbfoikeg', title: 'Sunset Vibes - Alan Walker', thumb: 'https://i.ytimg.com/vi/hTWKbfoikeg/maxresdefault.jpg'},
+];
 
-var player;
+const thumbRow = document.getElementById('thumbRow');
+videos.forEach(video => {
+    const card = document.createElement('div');
+    card.className = 'thumb-card';
+    card.onclick = () => location.href = `player.html?v=${video.id}`;
+    card.innerHTML = `
+        <img src="${video.thumb}" alt="">
+        <div class="thumb-title">${video.title}</div>
+    `;
+    thumbRow.appendChild(card);
+});
+
 function onYouTubeIframeAPIReady() {
-    const videoId = getVideoIdFromUrl();
-    
-    // Set title and artist
-    if(videoData[videoId]) {
-        document.getElementById('video-title').textContent = videoData[videoId].title;
-        document.getElementById('video-artist').textContent = videoData[videoId].artist;
-    }
-
     player = new YT.Player('player', {
-        videoId: videoId,
-        width: '100%',
-        height: '100%',
+        videoId: currentVideoId,
         playerVars: {
-            'autoplay': 1,
-            'controls': 1,
-            'modestbranding': 1,
-            'rel': 0,
-            'playsinline': 1
+            autoplay: 1,
+            controls: 1,
+            modestbranding: 1,
+            rel: 0,
+            playsinline: 1,
+            iv_load_policy: 3,
+            loop: 1,
+            playlist: currentVideoId
         },
-        events: {
-            'onReady': function(event) {
-                event.target.playVideo();
-            }
-        }
+        events: { 'onReady': e => {
+            document.getElementById('loading').style.display='none';
+            e.target.playVideo();
+        }}
     });
 }
 </script>
