@@ -1,597 +1,318 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Musify - Your World of Sound</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Mobile Clone</title>
+    <meta name="description" content="YouTube Mobile UI Clone">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --yt-red: #FF0000;
+            --yt-dark: #212121;
+            --yt-light-gray: #AAAAAA;
+            --yt-white: #FFFFFF;
+        }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
 
-<style>
-* {margin:0; padding:0; box-sizing:border-box;}
-html, body {
-    height: 100%;
-    overscroll-behavior: none; /* Prevents pull-to-refresh bounce in WebView */
-}
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    background:#ffffff;
-    color:#000;
-    overflow-x:hidden;
-    padding-bottom:80px;
-    -webkit-overflow-scrolling: touch; /* Enables momentum scrolling */
-    touch-action: pan-y; /* Allows vertical scroll, improves responsiveness */
-}
+        body {
+            background-color: var(--yt-white);
+            color: #030303;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 56px;
+        }
 
-/* HEADER */
-.header{
-    background:url('image.jpg') center/cover no-repeat;
-    width:100%;
-    height:210px;
-    position:relative;
-    display:flex;
-    align-items:flex-end;
-    padding:50px 15px 20px;
-    color:white;
-}
-.header-logo{
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    background:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    flex-shrink: 0;
-}
-.header-logo img{width:100%; height:100%; object-fit: cover;}
-.header-text{
-    margin-left:10px;
-    font-size:22px;
-    font-weight:700;
-}
-.sign-btn{
-    position:absolute;
-    top:20px;
-    right:15px;
-    background:white;
-    color:black;
-    padding:8px 22px;
-    border-radius:25px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    border:none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--yt-white);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+            z-index: 100;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-/* Welcome Card */
-.welcome-box{
-    background:#c9b0e9;
-    padding:18px;
-    margin:15px;
-    border-radius:20px;
-    display:flex;
-    gap:15px;
-    align-items:center;
-    box-shadow:0 4px 20px rgba(0,0,0,0.08);
-}
-.welcome-box img{
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    object-fit: cover;
-}
-.welcome-text{
-    font-size:15px;
-    line-height:1.4;
-    color:#444;
-}
-.welcome-title{
-    font-size:20px;
-    font-weight:700;
-    color:#000;
-    margin-bottom:4px;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+        }
 
-/* Section Titles */
-.section-title{
-    font-size:20px;
-    font-weight:700;
-    margin:20px 15px 10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+        .logo i {
+            color: var(--yt-red);
+            font-size: 24px;
+            margin-right: 4px;
+        }
 
-/* VIDEO SLIDER - Optimized for smooth mobile scrolling */
-.video-slider-container{
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space:nowrap;
-    padding-left:15px;
-    padding-right:15px;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x; /* Critical: allows smooth horizontal swipe */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-.video-slider-container::-webkit-scrollbar { display:none; }
+        .logo span {
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-.video-card{
-    width:220px;
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    margin-right:12px;
-    display:inline-block;
-    vertical-align:top;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    cursor:pointer;
-    transition: transform 0.15s ease;
-    scroll-snap-align: start;
-    will-change: transform;
-    flex-shrink: 0;
-}
-.video-card:active {
-    transform: scale(0.96);
-}
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
 
-.video-thumbnail {
-    width:100%;
-    height:130px;
-    background:#ccc no-repeat center/cover;
-    position: relative;
-}
+        .header-icons i {
+            font-size: 20px;
+            color: #606060;
+        }
 
-.video-duration {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.75);
-    color: white;
-    padding: 3px 7px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-}
+        main {
+            margin-top: 56px;
+            padding: 8px;
+        }
 
-/* Video Info */
-.video-info{
-    padding:10px;
-}
-.video-title{
-    font-size:14px;
-    font-weight:600;
-    margin-bottom:4px;
-    color:#000;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.video-artist{
-    font-size:12.5px;
-    color:#666;
-}
-.video-views {
-    font-size:11px;
-    color:#999;
-    margin-top:3px;
-}
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
 
-/* NAV BAR */
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:white;
-    padding:8px 0 10px;
-    border-top:1px solid #ddd;
-    display:flex;
-    justify-content:space-around;
-    z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-}
-.bottom-nav-item{
-    text-align:center;
-    font-size:11px;
-    color:#777;
-    text-decoration: none;
-    padding: 6px 8px;
-    min-width: 60px;
-    border-radius: 8px;
-    transition: all 0.2s;
-}
-.bottom-nav-item i{
-    font-size:21px;
-    margin-bottom:4px;
-    display:block;
-}
-.bottom-nav-item.active{
-    color:#ff2dd6;
-    font-weight:600;
-    background:rgba(255,45,214,0.08);
-}
+        .video-card {
+            width: 100%;
+            margin-bottom: 8px;
+        }
 
-/* Responsive Adjustments */
-@media (max-width: 380px) {
-    .video-card {
-        width: 185px;
-    }
-    .video-thumbnail {
-        height: 110px;
-    }
-    .header { padding: 50px 12px 20px; }
-}
-</style>
+        .thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        .thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .video-info {
+            display: flex;
+            padding: 12px 0;
+            gap: 12px;
+        }
+
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .channel-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-name {
+            font-size: 12px;
+            color: #606060;
+            margin-bottom: 2px;
+        }
+
+        .video-stats {
+            font-size: 12px;
+            color: #606060;
+            display: flex;
+            gap: 4px;
+        }
+
+        .video-stats span:not(:last-child):after {
+            content: "•";
+            margin-left: 4px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--yt-white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #e5e5e5;
+            max-width: 600px;
+            margin: 0 auto;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #606060;
+            text-decoration: none;
+            font-size: 10px;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--yt-red);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <div class="logo">
+            <i class="fab fa-youtube"></i>
+            <span>YouTube</span>
+        </div>
+        <div class="header-icons">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-video"></i>
+            <i class="fas fa-bell"></i>
+        </div>
+    </header>
 
-<!-- HEADER -->
-<div class="header">
-    <button class="sign-btn">Sign in</button>
-    <div class="header-logo"><img src="logo.png" alt="Logo"></div>
-    <div class="header-text">Your World of Sound</div>
-</div>
+    <main>
+        <div class="video-grid">
+            <!-- Video cards will be inserted here -->
+            <!-- 40 video cards will be generated by the JavaScript below -->
+        </div>
+    </main>
 
-<!-- WELCOME -->
-<div class="welcome-box">
-    <img src="logo2.png" alt="Welcome">
-    <div>
-        <div class="welcome-title">Musify</div>
-        <div class="welcome-text">Welcome to Musify! Stream and enjoy unlimited music.</div>
-    </div>
-</div>
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-fire"></i>
+            <span>Shorts</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-bell"></i>
+            <span>Subscriptions</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-play-circle"></i>
+            <span>Library</span>
+        </a>
+    </nav>
 
-<!-- TRENDING NOW -->
-<div class="section-title">🔥 Trending Now</div>
-<div class="video-slider-container">
-    <div class="video-card" onclick="openPlayer('9bZkp7q19f0')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg');">
-            <div class="video-duration">4:12</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Gangnam Style</div>
-            <div class="video-artist">PSY</div>
-            <div class="video-views">4.8B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('kJQP7kiw5Fk')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg');">
-            <div class="video-duration">4:48</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Despacito</div>
-            <div class="video-artist">Luis Fonsi ft. Daddy Yankee</div>
-            <div class="video-views">8.2B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('JGwWNGJdvx8')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/JGwWNGJdvx8/hqdefault.jpg');">
-            <div class="video-duration">4:24</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Shape of You</div>
-            <div class="video-artist">Ed Sheeran</div>
-            <div class="video-views">6.1B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('RgKAFK5djSk')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/RgKAFK5djSk/hqdefault.jpg');">
-            <div class="video-duration">3:45</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Uptown Funk</div>
-            <div class="video-artist">Mark Ronson ft. Bruno Mars</div>
-            <div class="video-views">4.9B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('hTWKbfoikeg')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/hTWKbfoikeg/hqdefault.jpg');">
-            <div class="video-duration">3:28</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Sunset Vibes</div>
-            <div class="video-artist">Wave Riders</div>
-            <div class="video-views">2.1M views</div>
-        </div>
-    </div>
-</div>
-
-<!-- POP HITS -->
-<div class="section-title">🎵 Pop Hits</div>
-<div class="video-slider-container">
-    <div class="video-card" onclick="openPlayer('60ItHLz5WEA')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/60ItHLz5WEA/hqdefault.jpg');">
-            <div class="video-duration">3:32</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Where Icons Become</div>
-            <div class="video-artist">Ocean Dreams</div>
-            <div class="video-views">15M views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('3AtDnEC4zak')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/3AtDnEC4zak/hqdefault.jpg');">
-            <div class="video-duration">4:04</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Closer</div>
-            <div class="video-artist">Chainsmokers</div>
-            <div class="video-views">2.8B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('pRpeEdMmmfY')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/pRpeEdMmmfY/hqdefault.jpg');">
-            <div class="video-duration">3:52</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Waka Waka</div>
-            <div class="video-artist">Shakira</div>
-            <div class="video-views">3.7B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('kXYiU_JCYtU')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/kXYiU_JCYtU/hqdefault.jpg');">
-            <div class="video-duration">3:07</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Numb</div>
-            <div class="video-artist">Linkin Park</div>
-            <div class="video-views">2.1B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('WDY_uQIFzoY')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/WDY_uQIFzoY/hqdefault.jpg');">
-            <div class="video-duration">3:34</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Counting Stars</div>
-            <div class="video-artist">OneRepublic</div>
-            <div class="video-views">3.8B views</div>
-        </div>
-    </div>
-</div>
-
-<!-- ROCK CLASSICS -->
-<div class="section-title">🎸 Rock Classics</div>
-<div class="video-slider-container">
-    <div class="video-card" onclick="openPlayer('fJ9rUzIMcZQ')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/fJ9rUzIMcZQ/hqdefault.jpg');">
-            <div class="video-duration">4:15</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Bohemian Rhapsody</div>
-            <div class="video-artist">Queen</div>
-            <div class="video-views">1.8B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('l482T0yN6pE')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/l482T0yN6pE/hqdefault.jpg');">
-            <div class="video-duration">4:59</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Hotel California</div>
-            <div class="video-artist">Eagles</div>
-            <div class="video-views">374M views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('btPJPFnesV4')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/btPJPFnesV4/hqdefault.jpg');">
-            <div class="video-duration">4:10</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Stairway to Heaven</div>
-            <div class="video-artist">Led Zeppelin</div>
-            <div class="video-views">191M views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('WdF-NbCuKMs')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/WdF-NbCuKMs/hqdefault.jpg');">
-            <div class="video-duration">4:01</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Perfect Day at Legends</div>
-            <div class="video-artist">Legend of the Seas</div>
-            <div class="video-views">8.7M views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('XqZsoesa55w')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/XqZsoesa55w/hqdefault.jpg');">
-            <div class="video-duration">4:24</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Sweet Child O' Mine</div>
-            <div class="video-artist">Guns N' Roses</div>
-            <div class="video-views">1.4B views</div>
-        </div>
-    </div>
-</div>
-
-<!-- EDM PARTY -->
-<div class="section-title">🎉 EDM Party</div>
-<div class="video-slider-container">
-    <div class="video-card" onclick="openPlayer('jrTMMG0zJyU')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/jrTMMG0zJyU/hqdefault.jpg');">
-            <div class="video-duration">3:32</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Faded</div>
-            <div class="video-artist">Alan Walker</div>
-            <div class="video-views">3.5B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('5qm8PH4xAss')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/5qm8PH4xAss/hqdefault.jpg');">
-            <div class="video-duration">3:37</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Alone</div>
-            <div class="video-artist">Marshmello</div>
-            <div class="video-views">2.3B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('YqeW9_5kURI')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/YqeW9_5kURI/hqdefault.jpg');">
-            <div class="video-duration">4:53</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Titanium</div>
-            <div class="video-artist">David Guetta ft. Sia</div>
-            <div class="video-views">1.8B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('1k8craCGpgs')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/1k8craCGpgs/hqdefault.jpg');">
-            <div class="video-duration">3:54</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Don't Let Me Down</div>
-            <div class="video-artist">Chainsmokers</div>
-            <div class="video-views">2.1B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('aatr_7MftFc')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/aatr_7MftFc/hqdefault.jpg');">
-            <div class="video-duration">4:12</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Wake Me Up</div>
-            <div class="video-artist">Avicii</div>
-            <div class="video-views">2.4B views</div>
-        </div>
-    </div>
-</div>
-
-<!-- CHILL VIBES -->
-<div class="section-title">🌊 Chill Vibes</div>
-<div class="video-slider-container">
-    <div class="video-card" onclick="openPlayer('0yW7w8F2TVA')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/0yW7w8F2TVA/hqdefault.jpg');">
-            <div class="video-duration">3:20</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Cheap Thrills</div>
-            <div class="video-artist">Sia</div>
-            <div class="video-views">2.2B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('iKzRIweSBLA')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/iKzRIweSBLA/hqdefault.jpg');">
-            <div class="video-duration">3:45</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Lean On</div>
-            <div class="video-artist">Major Lazer</div>
-            <div class="video-views">3.3B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('J2X5mJ3HDYE')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/J2X5mJ3HDYE/hqdefault.jpg');">
-            <div class="video-duration">3:25</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Cold Water</div>
-            <div class="video-artist">Major Lazer</div>
-            <div class="video-views">1.2B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('qDcFryDXQ7U')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/qDcFryDXQ7U/hqdefault.jpg');">
-            <div class="video-duration">3:26</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Let Me Love You</div>
-            <div class="video-artist">DJ Snake</div>
-            <div class="video-views">1.4B views</div>
-        </div>
-    </div>
-
-    <div class="video-card" onclick="openPlayer('nGeKSiCQkPw')">
-        <div class="video-thumbnail" style="background-image:url('https://img.youtube.com/vi/nGeKSiCQkPw/hqdefault.jpg');">
-            <div class="video-duration">3:10</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">Sorry</div>
-            <div class="video-artist">Justin Bieber</div>
-            <div class="video-views">3.6B views</div>
-        </div>
-    </div>
-</div>
-
-
-<!-- NAV BAR -->
-<nav class="bottom-nav">
-    <a href="home.html" class="bottom-nav-item active">
-        <i class="fas fa-home"></i> Home
-    </a>
-    <a href="search.html" class="bottom-nav-item">
-        <i class="fas fa-search"></i> Search
-    </a>
-    <a href="library.html" class="bottom-nav-item">
-        <i class="fas fa-book"></i> Library
-    </a>
-    <a href="profile.html" class="bottom-nav-item">
-        <i class="fas fa-user"></i> Profile
-    </a>
-</nav>
-
-<script>
-function openPlayer(videoId) {
-    window.location.href = "player.html?video=" + videoId;
-}
-
-// Enhanced touch feedback
-document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.video-card');
-    cards.forEach(card => {
-        card.addEventListener('touchstart', () => {
-            card.style.transform = 'scale(0.96)';
-        }, { passive: true });
+    <script>
+        // Video data generation
+        const videoData = [];
+        const channels = ["TechReviews", "CookingMaster", "TravelVlogs", "FitnessGuru", 
+                         "MusicLovers", "GamingZone", "DIYProjects", "ScienceFacts"];
         
-        card.addEventListener('touchend', () => {
-            card.style.transform = '';
-        });
-    });
-});
+        const titles = [
+            "How to build a website in 10 minutes",
+            "5 easy recipes for beginners",
+            "Top travel destinations 2023",
+            "Full body workout at home",
+            "Most relaxing piano music",
+            "Playing the new Call of Duty",
+            "Build a bookshelf for $20",
+            "Amazing science experiments",
+            "Smartphone photography tips",
+            "Learn JavaScript basics"
+        ];
 
-// Optional: Add haptic feedback if supported (Android WebView)
-if ('vibrate' in navigator) {
-    document.querySelectorAll('.video-card').forEach(card => {
-        card.addEventListener('click', () => {
-            navigator.vibrate(30);
-        });
-    });
-}
-</script>
+        const miscText = ["Episode", "Tutorial", "Guide", "Review", "Walkthrough", "Demo", "Lesson", "Part"];
 
+        // Generate 40 video items
+        for (let i = 0; i < 40; i++) {
+            const channel = channels[Math.floor(Math.random() * channels.length)];
+            const title = titles[Math.floor(Math.random() * titles.length)];
+            const misc = miscText[Math.floor(Math.random() * miscText.length)];
+            const views = Math.floor(Math.random() * 900) + 100 + "K";
+            const time = `${Math.floor(Math.random() * 11) + 1} ${Math.random() > 0.5 ? "hour" : "day"}${Math.random() > 0.66 ? "s" : ""} ago`;
+            const duration = `${Math.floor(Math.random() * 5) + 1}:${Math.floor(Math.random() * 59) + 10}`;
+            
+            videoData.push({
+                thumbnail: `https://picsum.photos/320/180?random=${i}`,
+                channelIcon: `https://picsum.photos/36?random=${i+100}`,
+                title: `${title} - ${misc} ${Math.floor(Math.random() * 9) + 1}`,
+                channel: channel,
+                views: views,
+                time: time,
+                duration: duration
+            });
+        }
+
+        // Insert videos into the DOM
+        const videoGrid = document.querySelector('.video-grid');
+        
+        videoData.forEach(video => {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.innerHTML = `
+                <div class="thumbnail">
+                    <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                    <span class="video-duration">${video.duration}</span>
+                </div>
+                <div class="video-info">
+                    <div class="channel-icon">
+                        <img src="${video.channelIcon}" alt="${video.channel}">
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">${video.title}</h3>
+                        <p class="channel-name">${video.channel}</p>
+                        <div class="video-stats">
+                            <span>${video.views} views</span>
+                            <span>${video.time}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            videoGrid.appendChild(videoCard);
+        });
+    </script>
 </body>
 </html>
