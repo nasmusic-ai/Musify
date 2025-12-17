@@ -8,6 +8,9 @@
 <title>Musify - Your World of Sound</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- PWA manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#ff2dd6">
 
 <style>
 :root {
@@ -824,7 +827,12 @@ document.addEventListener('click', (e) => {
 
 // ===== INITIALIZE =====
 init();
-</script>
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('[SW] registered'))
+      .catch(err => console.warn('[SW] failed', err));
+  }
+</script>
 </body>
 </html>
