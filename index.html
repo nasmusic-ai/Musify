@@ -8,7 +8,6 @@
 <title>Musify - Your World of Sound</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff2dd6">
 
 <style>
@@ -17,6 +16,7 @@
     --yt-light: #f9f9f9;
     --yt-gray: #606060;
     --yt-border: #e5e5e5;
+    --brand-color: #ff2dd6;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,13 +27,10 @@ body {
     color: #000;
     overflow-x: hidden;
     padding-bottom: 80px;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
 }
 
-/* HEADER */
+/* VIDEO HEADER CONTAINER */
 .header {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('image.jpg') center/cover no-repeat;
     width: 100%;
     height: 210px;
     position: relative;
@@ -41,63 +38,52 @@ body {
     align-items: flex-end;
     padding: 50px 15px 20px;
     color: white;
-}
-.header-logo {
-    height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.header-logo img { width: 100%; height: 100%; object-fit: cover; }
-.header-text { margin-left: 10px; font-size: 22px; font-weight: 700; }
-.sign-btn {
-    position: absolute;
-    top: 20px;
-    right: 15px;
-    background: white;
-    color: black;
-    padding: 8px 22px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden; /* Important for video clipping */
 }
 
-/* SEARCH BAR */
-.search-container {
-    position: fixed;
+/* THE BACKGROUND VIDEO */
+#headerVideo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+/* OVERLAY TO MAKE TEXT READABLE */
+.header-overlay {
+    position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 56px;
-    background: white;
-    border-bottom: 1px solid var(--yt-border);
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    gap: 16px;
-    z-index: 1001;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
 }
-.search-container.active { transform: translateY(0); }
-.search-container input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    background: transparent;
-}
-.search-container i { cursor: pointer; color: var(--yt-gray); }
 
-/* MAIN CONTENT */
-main { padding-top: 0; }
-.page-section { display: none; }
-.page-section.active { display: block; }
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.header-logo {
+    height: 55px;
+    width: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid white;
+}
+.header-logo img { width: 100%; height: 100%; object-fit: cover; }
+.header-text { margin-left: 10px; font-size: 22px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
 /* VIDEO GRID */
 .video-grid {
@@ -106,18 +92,14 @@ main { padding-top: 0; }
     gap: 16px;
     padding: 16px;
 }
-.video-card {
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-.video-card:active { transform: scale(0.98); }
+.video-card { cursor: pointer; }
 .video-card .thumbnail {
     position: relative;
     width: 100%;
     padding-bottom: 56.25%;
     overflow: hidden;
     border-radius: 12px;
-    background: #ddd;
+    background: #eee;
 }
 .video-card .thumbnail img {
     position: absolute;
@@ -133,324 +115,133 @@ main { padding-top: 0; }
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 12px;
-    font-weight: 600;
 }
-.video-info {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-}
-.channel-icon {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-}
+.video-info { display: flex; gap: 12px; margin-top: 12px; }
+.channel-icon { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; }
 .channel-icon img { width: 100%; height: 100%; object-fit: cover; }
-.video-details { flex: 1; }
-.video-title {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-    margin-bottom: 4px;
-}
-.channel-name {
-    font-size: 13px;
-    color: var(--yt-gray);
-    cursor: pointer;
-}
-.video-stats {
-    font-size: 12px;
-    color: var(--yt-gray);
-}
 
 /* SHORTS */
-.shorts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-}
+.shorts-container { padding: 16px; display: flex; flex-direction: column; gap: 20px; }
 .short-video {
-    position: relative;
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    aspect-ratio: 9 / 16;
-    border-radius: 12px;
+    aspect-ratio: 9/16;
+    border-radius: 15px;
     overflow: hidden;
     background: black;
+    position: relative;
 }
-.short-video iframe {
-    width: 100%; height: 100%;
-    border: none;
-}
-.short-info {
-    position: absolute;
-    bottom: 12px; left: 12px;
-    color: white;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-}
-.short-actions {
-    position: absolute;
-    right: 12px; bottom: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    color: white;
-    font-size: 12px;
-}
+.short-video iframe { width: 100%; height: 100%; border: none; }
 
-/* SUBSCRIPTIONS */
-.subs-container { padding: 16px; }
-.channel-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--yt-border);
-}
-.channel-row img {
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.channel-info { flex: 1; }
-.subscribe-btn {
-    padding: 6px 16px;
-    border: 1px solid var(--yt-red);
-    background: var(--yt-red);
-    color: white;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-}
-.subscribe-btn.subscribed {
-    background: transparent;
-    color: var(--yt-gray);
-    border-color: var(--yt-gray);
-}
-
-/* LIBRARY */
-.library-container { padding: 16px; }
-.library-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px;
-    cursor: pointer;
-    border-radius: 8px;
-}
-.library-item:hover { background: rgba(0,0,0,0.05); }
-
-/* VIDEO MODAL */
+/* MODAL */
 .video-modal {
     display: none;
     position: fixed;
     inset: 0;
     background: white;
     z-index: 2000;
-    overflow-y: auto;
 }
-.video-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid var(--yt-border);
-}
-.video-player-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%;
-    background: black;
-}
-.video-player {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border: none;
-}
-.video-actions {
-    display: flex;
-    justify-content: space-around;
-    padding: 16px;
-    border-bottom: 1px solid var(--yt-border);
-}
-.action-btn {
-    text-align: center;
-    font-size: 12px;
-    cursor: pointer;
-}
-.action-btn i {
-    display: block;
-    font-size: 20px;
-    margin-bottom: 4px;
-}
+.video-player-container { position: relative; padding-bottom: 56.25%; background: black; }
+.video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-/* NAV BAR */
+/* NAV */
 .bottom-nav {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     background: white;
-    padding: 8px 0 10px;
-    border-top: 1px solid #ddd;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
     display: flex;
     justify-content: space-around;
     z-index: 1000;
 }
-.bottom-nav-item {
-    text-align: center;
-    font-size: 11px;
-    color: #777;
-    text-decoration: none;
-    padding: 6px 8px;
-    min-width: 60px;
-    border-radius: 8px;
-}
-.bottom-nav-item i {
-    font-size: 21px;
-    margin-bottom: 4px;
-    display: block;
-}
-.bottom-nav-item.active {
-    color: #ff2dd6;
-    font-weight: 600;
-}
+.bottom-nav-item { text-align: center; color: #777; text-decoration: none; font-size: 11px; }
+.bottom-nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+.bottom-nav-item.active { color: var(--brand-color); }
 
-@media (max-width: 480px) {
-    .video-grid { grid-template-columns: 1fr; }
-}
+.page-section { display: none; }
+.page-section.active { display: block; }
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <button class="sign-btn">Sign in</button>
-    <div class="header-logo"><img src="logo.png" alt="Logo"></div>
-    <div class="header-text">Your World of Sound</div>
-</div>
-
-<div class="search-container" id="searchContainer">
-    <i class="fas fa-arrow-left" onclick="toggleSearch()"></i>
-    <input type="text" id="searchInput" placeholder="Search videos..." onkeyup="performSearch()">
-    <i class="fas fa-microphone"></i>
+    <video autoplay muted loop playsinline id="headerVideo">
+        <source src="your-video.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    <div class="header-overlay"></div>
+    <div class="header-content">
+        <div class="header-logo">
+            <img src="https://i9.ytimg.com/vi/oS4okZ0a6jY/mqdefault.jpg?sqp=CLDOmsoG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCiwg32IAUB-5bv0c0R6wj94hhAxQ" alt="Logo">
+        </div>
+        <div class="header-text">Your World of Sound</div>
+    </div>
 </div>
 
 <main>
     <div class="page-section active" id="homePage">
         <div class="video-grid" id="videoGrid"></div>
     </div>
-
     <div class="page-section" id="shortsPage">
         <div class="shorts-container" id="shortsContainer"></div>
-    </div>
-
-    <div class="page-section" id="subsPage">
-        <div class="subs-container" id="subsContainer"></div>
-    </div>
-
-    <div class="page-section" id="libraryPage">
-        <div class="library-container" id="libraryContainer"></div>
     </div>
 </main>
 
 <div class="video-modal" id="videoModal">
-    <div class="video-header">
+    <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
         <h3 id="modalTitle">Now Playing</h3>
-        <i class="fas fa-times" onclick="closeVideo()"></i>
+        <i class="fas fa-times" onclick="closeVideo()" style="font-size: 24px; cursor: pointer;"></i>
     </div>
     <div class="video-player-container">
-        <iframe id="videoPlayer" class="video-player" src="" allowfullscreen></iframe>
-    </div>
-    <div class="video-actions">
-        <div class="action-btn" onclick="toggleLike(this)">
-            <i class="fas fa-thumbs-up"></i>
-            <span>Like</span>
-        </div>
-        <div class="action-btn" onclick="alert('Share clicked')">
-            <i class="fas fa-share"></i>
-            <span>Share</span>
-        </div>
-        <div class="action-btn" onclick="toggleSubscribe(this)">
-            <i class="fas fa-bell"></i>
-            <span>Subscribe</span>
-        </div>
-        <div class="action-btn" onclick="alert('Download clicked')">
-            <i class="fas fa-download"></i>
-            <span>Download</span>
-        </div>
+        <iframe id="videoPlayer" src="" allowfullscreen></iframe>
     </div>
 </div>
 
 <nav class="bottom-nav">
     <a href="#" class="bottom-nav-item active" onclick="navigateTo('home')">
-        <i class="fas fa-home"></i> Home
+        <i class="fas fa-home"></i>Home
     </a>
     <a href="#" class="bottom-nav-item" onclick="navigateTo('shorts')">
-        <i class="fas fa-fire"></i> Shorts
-    </a>
-    <a href="#" class="bottom-nav-item" onclick="navigateTo('subs')">
-        <i class="fas fa-users"></i> Subscriptions
-    </a>
-    <a href="#" class="bottom-nav-item" onclick="navigateTo('library')">
-        <i class="fas fa-play-circle"></i> Library
+        <i class="fas fa-fire"></i>Shorts
     </a>
 </nav>
 
 <script>
+const universalImage = "https://i9.ytimg.com/vi/oS4okZ0a6jY/mqdefault.jpg?sqp=CLDOmsoG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCiwg32IAUB-5bv0c0R6wj94hhAxQ";
+const targetVideoId = "oS4okZ0a6jY";
+
 const videoData = [
-    {id: 'SKSp6UxI394', title: 'JESUS IS YESHUA', channel: 'Don Jose Guardo Jr', views: '125K', time: '2 days ago', duration: '8:42'},
-    {id: 'WdF-NbCuKMs', title: 'Flowers for you', channel: 'Don Jose Guardo Jr', views: '89K', time: '1 week ago', duration: '12:15'},
-    {id: 'aIXNvKJ8zfs', title: 'Ai Rockstar', channel: 'Don Jose Guardo Jr', views: '67K', time: '2 weeks ago', duration: '10:30'},
-    {id: 'BO2W11UGV_Q', title: 'I\'M LOST IN YOUR SHADOW', channel: 'Don Jose Guardo Jr', views: '45K', time: '3 weeks ago', duration: '9:18'},
-    {id: '60ItHLz5WEA', title: 'Tutorial Part 5: Final Project', channel: 'TechTutorials', views: '156K', time: '1 month ago', duration: '15:45'},
-    {id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', channel: 'Rick Astley', views: '1.2B', time: '13 years ago', duration: '3:32'}
+    {id: targetVideoId, title: 'Featured Music Video 1', views: '1.2M'},
+    {id: targetVideoId, title: 'Exclusive Performance', views: '800K'},
+    {id: targetVideoId, title: 'Behind the Scenes', views: '450K'},
+    {id: targetVideoId, title: 'New Release 2024', views: '2.5M'},
+    {id: targetVideoId, title: 'Official Audio', views: '3.1M'},
+    {id: targetVideoId, title: 'Live Stream Replay', views: '150K'}
 ];
-
-const shortsData = [
-    {id: 'short1', title: 'Featured Clip', channel: 'Official Channel'},
-    {id: 'short2', title: 'Highlights', channel: 'Music World'},
-    {id: 'short3', title: 'Behind the Scenes', channel: 'Artist Vlogs'}
-];
-
-const targetVideoId = 'oS4okZ0a6jY'; // YOUR REQUESTED VIDEO
 
 function init() {
-    renderVideos(videoData);
+    renderVideos();
     renderShorts();
-    renderLibrary();
 }
 
-function navigateTo(page) {
-    document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
-    document.getElementById(page + 'Page').classList.add('active');
-}
-
-function renderVideos(videos) {
+function renderVideos() {
     const grid = document.getElementById('videoGrid');
-    grid.innerHTML = videos.map(video => `
-        <div class="video-card" onclick="playVideo('${video.id}', '${video.title.replace(/'/g, "\\'")}')">
+    grid.innerHTML = videoData.map(v => `
+        <div class="video-card" onclick="playVideo('${v.title}')">
             <div class="thumbnail">
-                <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" alt="${video.title}" loading="lazy">
-                <span class="video-duration">${video.duration}</span>
+                <img src="${universalImage}" alt="thumbnail">
+                <span class="video-duration">4:15</span>
             </div>
             <div class="video-info">
                 <div class="channel-icon">
-                    <img src="https://img.youtube.com/vi/${video.id}/default.jpg">
+                    <img src="${universalImage}">
                 </div>
                 <div class="video-details">
-                    <h3 class="video-title">${video.title}</h3>
-                    <p class="channel-name">${video.channel}</p>
-                    <div class="video-stats">
-                        <span>${video.views} views</span> • <span>${video.time}</span>
-                    </div>
+                    <h4 style="font-size:14px; margin-bottom:4px;">${v.title}</h4>
+                    <p style="font-size:12px; color:#606060;">Musify Official • ${v.views} views</p>
                 </div>
             </div>
         </div>
@@ -459,29 +250,19 @@ function renderVideos(videos) {
 
 function renderShorts() {
     const container = document.getElementById('shortsContainer');
-    container.innerHTML = shortsData.map(short => `
+    const shorts = [1, 2, 3];
+    container.innerHTML = shorts.map(() => `
         <div class="short-video">
-            <iframe src="https://www.youtube.com/embed/${targetVideoId}?autoplay=0&loop=1&playlist=${targetVideoId}" allowfullscreen></iframe>
-            <div class="short-info">
-                <div class="short-title">${short.title}</div>
-                <div class="short-channel">${short.channel}</div>
-            </div>
-            <div class="short-actions">
-                <i class="fas fa-heart"></i>
-                <span>12K</span>
-                <i class="fas fa-comment"></i>
-                <span>234</span>
-            </div>
+            <iframe src="https://www.youtube.com/embed/${targetVideoId}?modestbranding=1&rel=0" allowfullscreen></iframe>
         </div>
     `).join('');
 }
 
-function playVideo(originalId, title) {
+function playVideo(title) {
     const modal = document.getElementById('videoModal');
     const player = document.getElementById('videoPlayer');
-    // Forces the player to play your requested video ID instead of the clicked one
-    player.src = `https://www.youtube.com/embed/${targetVideoId}?autoplay=1&rel=0`;
     document.getElementById('modalTitle').textContent = title;
+    player.src = `https://www.youtube.com/embed/${targetVideoId}?autoplay=1&modestbranding=1`;
     modal.style.display = 'block';
 }
 
@@ -492,22 +273,11 @@ function closeVideo() {
     modal.style.display = 'none';
 }
 
-function renderLibrary() {
-    const container = document.getElementById('libraryContainer');
-    container.innerHTML = `
-        <div class="library-item"><i class="fas fa-history"></i> <h4>History</h4></div>
-        <div class="library-item"><i class="fas fa-video"></i> <h4>My Videos</h4></div>
-        <div class="library-item"><i class="fas fa-thumbs-up"></i> <h4>Liked Videos</h4></div>
-    `;
-}
-
-function toggleLike(btn) {
-    btn.classList.toggle('liked');
-    btn.style.color = btn.classList.contains('liked') ? '#ff2dd6' : 'black';
-}
-
-function toggleSearch() {
-    document.getElementById('searchContainer').classList.toggle('active');
+function navigateTo(page) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(page + 'Page').classList.add('active');
+    if (event) event.currentTarget.classList.add('active');
 }
 
 init();
