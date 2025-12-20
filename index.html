@@ -8,7 +8,6 @@
 <title>Musify - Your World of Sound</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- PWA manifest -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff2dd6">
 
@@ -32,9 +31,9 @@ body {
     touch-action: pan-y;
 }
 
-/* HEADER (ORIGINAL DESIGN) */
+/* HEADER */
 .header {
-    background: url('image.jpg') center/cover no-repeat;
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('image.jpg') center/cover no-repeat;
     width: 100%;
     height: 210px;
     position: relative;
@@ -190,6 +189,7 @@ main { padding-top: 0; }
     position: absolute;
     bottom: 12px; left: 12px;
     color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
 }
 .short-actions {
     position: absolute;
@@ -243,11 +243,6 @@ main { padding-top: 0; }
     border-radius: 8px;
 }
 .library-item:hover { background: rgba(0,0,0,0.05); }
-.library-item i {
-    font-size: 20px;
-    width: 24px;
-    text-align: center;
-}
 
 /* VIDEO MODAL */
 .video-modal {
@@ -293,72 +288,8 @@ main { padding-top: 0; }
     font-size: 20px;
     margin-bottom: 4px;
 }
-.comments-section { padding: 16px; }
-.comment {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-.comment-avatar {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: #ccc;
-}
-.comment-content { flex: 1; }
-.comment-author { font-weight: 500; margin-bottom: 4px; }
-.comment-text { margin-bottom: 4px; }
-.comment-actions { font-size: 12px; color: var(--yt-gray); }
 
-/* CREATE MODAL */
-.create-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 3000;
-}
-.create-options {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    width: 90%;
-    max-width: 400px;
-}
-.create-option {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px;
-    cursor: pointer;
-}
-.create-option i { font-size: 24px; color: var(--yt-red); }
-
-/* NOTIFICATIONS */
-.notifications-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 320px;
-    max-width: 90vw;
-    background: white;
-    border-left: 1px solid var(--yt-border);
-    height: 100vh;
-    overflow-y: auto;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 1002;
-}
-.notifications-panel.active { transform: translateX(0); }
-.notification-item {
-    padding: 16px;
-    border-bottom: 1px solid var(--yt-border);
-}
-
-/* NAV BAR (ORIGINAL DESIGN) */
+/* NAV BAR */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -370,7 +301,6 @@ main { padding-top: 0; }
     display: flex;
     justify-content: space-around;
     z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 .bottom-nav-item {
     text-align: center;
@@ -380,7 +310,6 @@ main { padding-top: 0; }
     padding: 6px 8px;
     min-width: 60px;
     border-radius: 8px;
-    transition: all 0.2s;
 }
 .bottom-nav-item i {
     font-size: 21px;
@@ -390,10 +319,8 @@ main { padding-top: 0; }
 .bottom-nav-item.active {
     color: #ff2dd6;
     font-weight: 600;
-    background: rgba(255,45,214,0.08);
 }
 
-/* RESPONSIVE */
 @media (max-width: 480px) {
     .video-grid { grid-template-columns: 1fr; }
 }
@@ -402,44 +329,36 @@ main { padding-top: 0; }
 
 <body>
 
-<!-- HEADER (ORIGINAL DESIGN) -->
 <div class="header">
     <button class="sign-btn">Sign in</button>
     <div class="header-logo"><img src="logo.png" alt="Logo"></div>
     <div class="header-text">Your World of Sound</div>
 </div>
 
-<!-- Search Bar -->
 <div class="search-container" id="searchContainer">
     <i class="fas fa-arrow-left" onclick="toggleSearch()"></i>
     <input type="text" id="searchInput" placeholder="Search videos..." onkeyup="performSearch()">
     <i class="fas fa-microphone"></i>
 </div>
 
-<!-- Main Content -->
 <main>
-    <!-- Home Page -->
     <div class="page-section active" id="homePage">
         <div class="video-grid" id="videoGrid"></div>
     </div>
 
-    <!-- Shorts Page -->
     <div class="page-section" id="shortsPage">
         <div class="shorts-container" id="shortsContainer"></div>
     </div>
 
-    <!-- Subscriptions Page -->
     <div class="page-section" id="subsPage">
         <div class="subs-container" id="subsContainer"></div>
     </div>
 
-    <!-- Library Page -->
     <div class="page-section" id="libraryPage">
         <div class="library-container" id="libraryContainer"></div>
     </div>
 </main>
 
-<!-- Video Player Modal -->
 <div class="video-modal" id="videoModal">
     <div class="video-header">
         <h3 id="modalTitle">Now Playing</h3>
@@ -466,85 +385,8 @@ main { padding-top: 0; }
             <span>Download</span>
         </div>
     </div>
-    <div class="comments-section">
-        <h4>Comments (2.3K)</h4>
-        <div class="comment">
-            <div class="comment-avatar"></div>
-            <div class="comment-content">
-                <div class="comment-author">User123</div>
-                <div class="comment-text">Great video! Really helped me understand the topic.</div>
-                <div class="comment-actions">
-                    <span>👍 234</span>
-                    <span>👎</span>
-                    <span>Reply</span>
-                </div>
-            </div>
-        </div>
-        <div class="comment">
-            <div class="comment-avatar"></div>
-            <div class="comment-content">
-                <div class="comment-author">Viewer456</div>
-                <div class="comment-text">Thanks for sharing this amazing content!</div>
-                <div class="comment-actions">
-                    <span>👍 189</span>
-                    <span>👎</span>
-                    <span>Reply</span>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-<!-- Create Modal -->
-<div class="create-modal" id="createModal" onclick="toggleCreate()">
-    <div class="create-options" onclick="event.stopPropagation()">
-        <div class="create-option" onclick="alert('Upload video clicked')">
-            <i class="fas fa-upload"></i>
-            <div>
-                <h4>Upload video</h4>
-                <p>Share your content with the world</p>
-            </div>
-        </div>
-        <div class="create-option" onclick="alert('Go live clicked')">
-            <i class="fas fa-broadcast-tower"></i>
-            <div>
-                <h4>Go live</h4>
-                <p>Start streaming to your audience</p>
-            </div>
-        </div>
-        <div class="create-option" onclick="alert('Create post clicked')">
-            <i class="fas fa-edit"></i>
-            <div>
-                <h4>Create post</h4>
-                <p>Share an update with your community</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Notifications Panel -->
-<div class="notifications-panel" id="notificationsPanel">
-    <div style="padding: 16px; border-bottom: 1px solid var(--yt-border);">
-        <h3>Notifications</h3>
-    </div>
-    <div class="notification-item">
-        <h5>New upload from TechTutorials</h5>
-        <p>Tutorial Part 6: Bonus Content</p>
-        <small>2 hours ago</small>
-    </div>
-    <div class="notification-item">
-        <h5>Trending video</h5>
-        <p>Your video is trending in your region</p>
-        <small>5 hours ago</small>
-    </div>
-    <div class="notification-item">
-        <h5>New subscriber</h5>
-        <p>Maria Garcia subscribed to your channel</p>
-        <small>1 day ago</small>
-    </div>
-</div>
-
-<!-- Bottom Navigation (ORIGINAL DESIGN) -->
 <nav class="bottom-nav">
     <a href="#" class="bottom-nav-item active" onclick="navigateTo('home')">
         <i class="fas fa-home"></i> Home
@@ -561,75 +403,36 @@ main { padding-top: 0; }
 </nav>
 
 <script>
-// ===== DATA =====
 const videoData = [
     {id: 'SKSp6UxI394', title: 'JESUS IS YESHUA', channel: 'Don Jose Guardo Jr', views: '125K', time: '2 days ago', duration: '8:42'},
     {id: 'WdF-NbCuKMs', title: 'Flowers for you', channel: 'Don Jose Guardo Jr', views: '89K', time: '1 week ago', duration: '12:15'},
     {id: 'aIXNvKJ8zfs', title: 'Ai Rockstar', channel: 'Don Jose Guardo Jr', views: '67K', time: '2 weeks ago', duration: '10:30'},
     {id: 'BO2W11UGV_Q', title: 'I\'M LOST IN YOUR SHADOW', channel: 'Don Jose Guardo Jr', views: '45K', time: '3 weeks ago', duration: '9:18'},
     {id: '60ItHLz5WEA', title: 'Tutorial Part 5: Final Project', channel: 'TechTutorials', views: '156K', time: '1 month ago', duration: '15:45'},
-    {id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', channel: 'Rick Astley', views: '1.2B', time: '13 years ago', duration: '3:32'},
-    {id: '9bZkp7q19f0', title: 'Gangnam Style', channel: 'Psy', views: '5B', time: '11 years ago', duration: '4:12'},
-    {id: 'JGwWNGJdvx8', title: 'Shape of You', channel: 'Ed Sheeran', views: '6B', time: '6 years ago', duration: '4:24'},
-    {id: 'tVj0ZTS4WF4', title: 'Baby Shark Dance', channel: 'Pinkfong', views: '14B', time: '8 years ago', duration: '2:17'},
-    {id: 'kJQP7kiw5Fk', title: 'Despacito', channel: 'Luis Fonsi', views: '8.4B', time: '6 years ago', duration: '4:41'},
-    {id: 'pRpeEdMmmQ0', title: 'See You Again', channel: 'Wiz Khalifa', views: '6.3B', time: '8 years ago', duration: '3:58'},
-    {id: 'RgKAFK5djSk', title: 'Uptown Funk', channel: 'Mark Ronson ft. Bruno Mars', views: '5.1B', time: '8 years ago', duration: '4:30'},
-    {id: 'hLQl3WQQoQ0', title: 'Waka Waka', channel: 'Shakira', views: '4B', time: '13 years ago', duration: '3:31'},
-    {id: '3tmd-ClpJxA', title: 'Hello', channel: 'Adele', views: '3.5B', time: '7 years ago', duration: '6:07'},
-    {id: 'kOkQ4T5WO9E', title: 'Look What You Made Me Do', channel: 'Taylor Swift', views: '1.6B', time: '6 years ago', duration: '4:16'},
-    {id: 'ApXoWvfEYVU', title: 'Faded', channel: 'Alan Walker', views: '3.9B', time: '7 years ago', duration: '3:47'},
-    {id: 'YqeW9_5kURI', title: 'Rockstar', channel: 'Post Malone', views: '1.2B', time: '5 years ago', duration: '4:39'},
-    {id: 'r7qovpFAGrQ', title: 'Dynamite', channel: 'BTS', views: '1.7B', time: '3 years ago', duration: '3:43'},
-    {id: 'CkAtaqT5t_c', title: 'Lalisa', channel: 'Lisa', views: '600M', time: '2 years ago', duration: '3:24'},
-    {id: 'aJOTlE1K90k', title: 'Alone', channel: 'Alan Walker', views: '1.8B', time: '6 years ago', duration: '2:59'}
-];
-
-const channelsData = [
-    {name: 'TechTutorials', subs: '2.3M'},
-    {name: 'Rick Astley', subs: '18M'},
-    {name: 'Psy', subs: '12M'},
-    {name: 'Ed Sheeran', subs: '55M'},
-    {name: 'Pinkfong', subs: '65M'},
-    {name: 'Luis Fonsi', subs: '32M'}
+    {id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', channel: 'Rick Astley', views: '1.2B', time: '13 years ago', duration: '3:32'}
 ];
 
 const shortsData = [
-    {id: 'SKSp6UxI394', title: 'Quick Tutorial', channel: 'TechTutorials'},
-    {id: 'dQw4w9WgXcQ', title: 'Funny Moment', channel: 'ComedyShorts'},
-    {id: '9bZkp7q19f0', title: 'Dance Challenge', channel: 'DanceVibes'},
-    {id: 'JGwWNGJdvx8', title: 'Music Clip', channel: 'MusicShorts'}
+    {id: 'short1', title: 'Featured Clip', channel: 'Official Channel'},
+    {id: 'short2', title: 'Highlights', channel: 'Music World'},
+    {id: 'short3', title: 'Behind the Scenes', channel: 'Artist Vlogs'}
 ];
 
-let currentPage = 'home';
-let likedVideos = new Set();
-let subscriptions = new Set();
-let watchHistory = JSON.parse(localStorage.getItem('watchHistory') || '[]');
+const targetVideoId = 'oS4okZ0a6jY'; // YOUR REQUESTED VIDEO
 
-// ===== INITIALIZATION =====
 function init() {
     renderVideos(videoData);
-    renderChannels();
     renderShorts();
     renderLibrary();
 }
 
-// ===== NAVIGATION =====
 function navigateTo(page) {
-    // Update active nav
     document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
-    event.target.closest('.bottom-nav-item').classList.add('active');
-    
-    // Hide all pages
+    event.currentTarget.classList.add('active');
     document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
-    
-    // Show selected page
     document.getElementById(page + 'Page').classList.add('active');
-    
-    currentPage = page;
 }
 
-// ===== VIDEO RENDERING =====
 function renderVideos(videos) {
     const grid = document.getElementById('videoGrid');
     grid.innerHTML = videos.map(video => `
@@ -639,15 +442,14 @@ function renderVideos(videos) {
                 <span class="video-duration">${video.duration}</span>
             </div>
             <div class="video-info">
-                <div class="channel-icon" onclick="event.stopPropagation(); showChannel('${video.channel}')">
-                    <img src="https://img.youtube.com/vi/${video.id}/default.jpg" alt="${video.channel}">
+                <div class="channel-icon">
+                    <img src="https://img.youtube.com/vi/${video.id}/default.jpg">
                 </div>
                 <div class="video-details">
                     <h3 class="video-title">${video.title}</h3>
-                    <p class="channel-name" onclick="event.stopPropagation(); showChannel('${video.channel}')">${video.channel}</p>
+                    <p class="channel-name">${video.channel}</p>
                     <div class="video-stats">
-                        <span>${video.views} views</span>
-                        <span>${video.time}</span>
+                        <span>${video.views} views</span> • <span>${video.time}</span>
                     </div>
                 </div>
             </div>
@@ -655,99 +457,31 @@ function renderVideos(videos) {
     `).join('');
 }
 
-// ===== SHORTS =====
 function renderShorts() {
     const container = document.getElementById('shortsContainer');
     container.innerHTML = shortsData.map(short => `
         <div class="short-video">
-            <iframe src="https://www.youtube.com/embed/${short.id}?autoplay=0&loop=1&playlist=${short.id}" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/${targetVideoId}?autoplay=0&loop=1&playlist=${targetVideoId}" allowfullscreen></iframe>
             <div class="short-info">
                 <div class="short-title">${short.title}</div>
                 <div class="short-channel">${short.channel}</div>
             </div>
             <div class="short-actions">
-                <i class="fas fa-heart" onclick="toggleLike(this)"></i>
+                <i class="fas fa-heart"></i>
                 <span>12K</span>
                 <i class="fas fa-comment"></i>
                 <span>234</span>
-                <i class="fas fa-share"></i>
-                <span>Share</span>
             </div>
         </div>
     `).join('');
 }
 
-// ===== SUBSCRIPTIONS =====
-function renderChannels() {
-    const container = document.getElementById('subsContainer');
-    container.innerHTML = channelsData.map(channel => `
-        <div class="channel-row">
-            <img src="https://picsum.photos/48?random=${channel.name}" alt="${channel.name}">
-            <div class="channel-info">
-                <h4>${channel.name}</h4>
-                <p>${channel.subs} subscribers</p>
-            </div>
-            <button class="subscribe-btn ${subscriptions.has(channel.name) ? 'subscribed' : ''}" 
-                    onclick="toggleSubscribe(this, '${channel.name}')">
-                ${subscriptions.has(channel.name) ? 'Subscribed' : 'Subscribe'}
-            </button>
-        </div>
-    `).join('');
-}
-
-// ===== LIBRARY =====
-function renderLibrary() {
-    const container = document.getElementById('libraryContainer');
-    container.innerHTML = `
-        <div class="library-item" onclick="alert('History clicked')">
-            <i class="fas fa-history"></i>
-            <h4>History</h4>
-        </div>
-        <div class="library-item" onclick="alert('My Videos clicked')">
-            <i class="fas fa-video"></i>
-            <h4>My Videos</h4>
-        </div>
-        <div class="library-item" onclick="alert('Watch Later clicked')">
-            <i class="fas fa-clock"></i>
-            <h4>Watch Later</h4>
-        </div>
-        <div class="library-item" onclick="alert('Liked Videos clicked')">
-            <i class="fas fa-thumbs-up"></i>
-            <h4>Liked Videos (${likedVideos.size})</h4>
-        </div>
-        <div class="library-item" onclick="alert('Downloads clicked')">
-            <i class="fas fa-download"></i>
-            <h4>Downloads</h4>
-        </div>
-        <hr style="margin: 16px 0;">
-        <h4 style="margin-bottom: 16px;">Recent History</h4>
-        ${watchHistory.slice(0, 3).map(video => `
-            <div class="library-item" onclick="playVideo('${video.id}', '${video.title}')">
-                <img src="https://img.youtube.com/vi/${video.id}/default.jpg" style="width: 40px; height: 40px; border-radius: 8px;">
-                <div>
-                    <h5 style="font-size: 14px;">${video.title}</h5>
-                    <p style="font-size: 12px; color: var(--yt-gray);">${video.channel}</p>
-                </div>
-            </div>
-        `).join('')}
-    `;
-}
-
-// ===== VIDEO PLAYER =====
-function playVideo(videoId, title) {
+function playVideo(originalId, title) {
     const modal = document.getElementById('videoModal');
     const player = document.getElementById('videoPlayer');
-    
-    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-    document.getElementById('modalTitle').textContent = title || 'Now Playing';
-    
-    // Add to watch history
-    const video = videoData.find(v => v.id === videoId);
-    if (video) {
-        watchHistory = [video, ...watchHistory.filter(v => v.id !== videoId)].slice(0, 20);
-        localStorage.setItem('watchHistory', JSON.stringify(watchHistory));
-    }
-    
+    // Forces the player to play your requested video ID instead of the clicked one
+    player.src = `https://www.youtube.com/embed/${targetVideoId}?autoplay=1&rel=0`;
+    document.getElementById('modalTitle').textContent = title;
     modal.style.display = 'block';
 }
 
@@ -758,81 +492,25 @@ function closeVideo() {
     modal.style.display = 'none';
 }
 
-// ===== ACTIONS =====
+function renderLibrary() {
+    const container = document.getElementById('libraryContainer');
+    container.innerHTML = `
+        <div class="library-item"><i class="fas fa-history"></i> <h4>History</h4></div>
+        <div class="library-item"><i class="fas fa-video"></i> <h4>My Videos</h4></div>
+        <div class="library-item"><i class="fas fa-thumbs-up"></i> <h4>Liked Videos</h4></div>
+    `;
+}
+
 function toggleLike(btn) {
     btn.classList.toggle('liked');
-    const isLiked = btn.classList.contains('liked');
-    btn.querySelector('span').textContent = isLiked ? 'Liked' : 'Like';
-    
-    // Update liked videos count
-    setTimeout(renderLibrary, 100);
+    btn.style.color = btn.classList.contains('liked') ? '#ff2dd6' : 'black';
 }
 
-function toggleSubscribe(btn, channelName) {
-    if (subscriptions.has(channelName)) {
-        subscriptions.delete(channelName);
-        btn.textContent = 'Subscribe';
-        btn.classList.remove('subscribed');
-    } else {
-        subscriptions.add(channelName);
-        btn.textContent = 'Subscribed';
-        btn.classList.add('subscribed');
-    }
-}
-
-// ===== HEADER FEATURES =====
 function toggleSearch() {
-    const search = document.getElementById('searchContainer');
-    search.classList.toggle('active');
-    if (search.classList.contains('active')) {
-        document.getElementById('searchInput').focus();
-    }
+    document.getElementById('searchContainer').classList.toggle('active');
 }
 
-function performSearch() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = videoData.filter(video => 
-        video.title.toLowerCase().includes(query) || 
-        video.channel.toLowerCase().includes(query)
-    );
-    renderVideos(filtered);
-}
-
-function toggleCreate() {
-    const modal = document.getElementById('createModal');
-    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function toggleNotifications() {
-    const panel = document.getElementById('notificationsPanel');
-    panel.classList.toggle('active');
-    if (panel.classList.contains('active')) {
-        document.getElementById('notifBadge').style.display = 'none';
-    }
-}
-
-function showChannel(channelName) {
-    alert(`Showing channel: ${channelName}\n\n${subscriptions.has(channelName) ? 'You are subscribed!' : 'Click subscribe to follow!'}`);
-}
-
-// ===== EVENT LISTENERS =====
-document.addEventListener('click', (e) => {
-    // Close notifications when clicking outside
-    const notifPanel = document.getElementById('notificationsPanel');
-    const bellIcon = e.target.closest('.fa-bell');
-    if (!notifPanel.contains(e.target) && !bellIcon) {
-        notifPanel.classList.remove('active');
-    }
-});
-
-// ===== INITIALIZE =====
 init();
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(() => console.log('[SW] registered'))
-      .catch(err => console.warn('[SW] failed', err));
-  }
 </script>
 </body>
 </html>
